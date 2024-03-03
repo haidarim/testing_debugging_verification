@@ -1,0 +1,30 @@
+
+#1 insertTests
+Here we found a bug. It used breaks instead of returns.
+The breaks only made it exit the closestested loop which
+was the for-loop and not the function. So it always reached
+the last add statement.
+
+#2 memberTests
+public void isMember() - testing a number that is in the set.
+public void notMemberEnd() - testing a number that is not in the set.
+public void notMemberMiddle() - testing a number that is not in the set.
+
+The reason we have 2 tests to check that a member is not in the set is to get full
+BC. The first one exits thru the last return statement after exiting the loop,
+while the second test uses the return statement inside the loop.
+
+#3 intersectTests
+This test suit uses only one test case, which tests three things.
+
+public void allIntersect()
+
+First is a non intersecting, which covers the branch to the remove statement.
+Then we have a matching number which covers the branch into the statements inside of
+the first if-loop. Then we use a number so that the for-loop terminates, covering the path
+from the forloop to the end of the method.
+
+#4 distinctClosedTests
+public void distinctClosedTrue() - returns true
+public void distinctClosedFalse() - returns false
+Will give BC

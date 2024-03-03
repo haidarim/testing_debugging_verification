@@ -1,0 +1,27 @@
+2)
+{Q} S {R}
+
+{Q}: {n>0}
+S: {res := 1; i := 2}
+{R}: {res=fact(n)}
+
+S1: loop 
+	
+	I: Loop Invariant 
+
+		{res=fact(i−1)∧1≤i≤n+1}
+	
+Q-->wp(S,R) = wp(S1;S2, R)	
+
+3)
+Initial Assertion: n>0
+
+Loop Invariant: 1<i≤n+1 ∧ res = fact(i - 1)
+
+invariant∧condition→[res=res*1;i=i+1]
+
+Termination: 
+invariant∧¬condition→[R]
+
+Total correctness:
+n>0∧S∧S1∧¬(1<i≤n+1)∧¬(i<=n)--→res=fact(n)

@@ -1,0 +1,20 @@
+   
+method M(x : int, y : int) returns (a : int, b : int) 
+	ensures a > b
+{//S
+	if (x > y) //S1 
+   		{a:= x;
+    		 b := y;}
+  	else //S2
+   		{a := y; 
+    		 b := x;}
+}
+
+{Q} S {R}
+
+Q-->wp(S,R) = wp(S1;S2, R) = 
+(x>y)-->wp(S1,R) ∩ ¬(x>y)-->(S2,a>b;a==b)
+
+the post condition will not hold if x == y
+the proof fails at S2 when x==y
+

@@ -1,0 +1,141 @@
+##Black-box testing
+    *Tasks:
+
+    1) Specify the input space for each argument to the method (including the object of that method).
+    2) Divide this input space into partitions, based on the specification.
+    3) Implement at least one test case for each partition, and possibly additional border cases.
+    4) For each test case, give a comment that describes which partition it tests.
+
+    *Methods to be tested for 1,...,4:
+
+        ´´´a) void setRequiredNumber(nEmployee:int, startTime:int, endTime:int)
+              sets the number of needed employees to nEmployee for all hours in   startTime<= t <= endTime
+
+            Requires (@pre):
+                (0 <= nEmployee) && (0 <= startTime) && (0 <= endTime)
+            Ensures (@post):
+                if startTime > endTime then //#
+                    the schedule is unchanged //--
+                  otherwise/#
+                      for each Hour between startTime and endtime (inclusive) //#
+                          if the length of workingEmployees is greater than nemployee //##
+                          then//-- ändrar både requiredNumber och workingEmployees
+                             requiredNumber is set to nemployee and workingEmployees
+                             keeps a number of employees equal to nemployee, discarding
+                             the rest
+                          otherwise //ändrar bara requiredNumber
+                             requiredNumber is set to nemployee and workingEmployees is unchanged
+                      and the rest of the schedule is unchanged
+        ´´´
+        ´´´b) int nextIncomplete(currentTime:int)
+              returns the closest time starting from currentTime for which the required amount of employees has not yet been scheduled.
+           requires:
+             currentTime >= 0 and currentTime < size
+           ensures:
+             if there is an hour in the interval currentTime to size - 1 such that
+                the length of workingEmployees is less that requiredNumber
+             then
+               returns the time of the hour closest to currentTime such that
+               the length of workingEmployees is less that requiredNumber
+             otherwise
+               returns -1
+             and in either case the schedule is unchanged
+        ´´´
+
+Answers:
+
+    a.1)
+        Input space: (0 <= nEmployee) && (0 <= startTime) && (0 <= endTime)
+                     or ("nEmployee" and "startTime" and "entTime" in { 0, 1, ..., MAX_INT } )
+                     or {nEmployee ∈ N ∩ startTime ∈ N ∩ endTime ∈ N}
+
+     a.2)
+        partition1: x, y, z when y>z
+
+        partition2: x, y, z when y<z and workingEmployee.len > x
+
+        partition3: x, y, z when y<z and workingEmployee.len <= x
+
+    a.3, a.4)
+        test cases:
+                test1: if startTime>endTime then the ws should be unchanged!
+                    input: ("xnEmployee = 0", "startTime = 4", "endTime = 2"), setRequiredNumber(nEmployee:int, startTime:int, endTime:int) = "unchanged"
+
+                test2:
+                    test_setRequiredNumberChangeReqNumAndWorkingNum: if startTime<endTime then if workingEmployee.len greater than nEmployee
+                    input: ("xnEmployee = 0", "startTime = 2", "endTime = 4") && workingEmployee.len == 1, setRequiredNumber(nEmployee:int, startTime:int, endTime:int)
+                    ==> "requiredNumber" == "nEmployee" && "workingEmployee.len" == "nEmployee"
+                test3:
+                    test_setRequiredNumberChangeOnlyReqNum: if workingEmployee.len <= nEmployee then change ONLY the requiredNum
+                    input: ("xnEmployee = 1", "startTime = 2", "endTime = 4") && workingEmployee.len == 0, setRequiredNumber(nEmployee:int, startTime:int, endTime:int)
+                    ==> "requiredNumber" == "nEmployee" && "workingEmployee" unchanged
+
+                test4:
+                if workingEmployee.length == 2 at 0-10
+                and required is 1 then in time 0-10 should have 1 employee
+
+                test5:
+                the specification does not tell about what if the time is out of workspace
+
+    b.1)
+            Input space: (0 <= currentTime) && (size > currentTime)
+                         or ("currentTime" >= 0 and "currentTime" in size)
+                         or {currentTime>=0 ∩ currentTime ∈ size}
+
+    b.2)
+            partition1: x ∈ {0, ... ,size-1} for i = currentTime to < size when h = ws.readSchedule(i).workingEmployee.len < h.requiredNumber
+                        then return i;
+
+            partition2: x ∈ {0, ... ,size-1} for i = currentTime to < size when h = ws.readSchedule(i).workingEmployee.len >= h.requiredNumber
+                        then return -1;
+
+    b.3, b.4)
+            test cases:
+                    test1:
+                        input: 0, when ws is booked until 4 and requiredNumber > workingEmployee.len ==> int next
+                        input: 0, when ws is booked until 8 and requiredNumber > workingEmployee.len ==> int next
+                    test2:
+                        input: 0, when ws is booked until 8 and requiredNumber <= workingEmployee.len ==> -1
+
+                    test3:
+                        if there is no incomplete work then return -1
+                    test4:
+                        if the number of workers is less than required then the next incomplete time should be the
+                        time the same time slot.
+                    test5:
+                        if the number of workers is less than required then the next incomplete time should be the
+                        time there nobody is signed for it.
+
+
+
+Both functions fulfill the contract (specification)??
+
+test:
+    1) if currentTime == size-1
+    2) if startTime==endTime
+
+
+
+founded bugs:
+a) setRequiredNumber's failed tests:
+        
+            @Test void test4(){
+                   WorkSchedule ws = new WorkSchedule(5);
+                   assertDoesNotThrow(() -> {ws.setRequiredNumber(1, 80, Integer.MAX_VALUE);});
+            }
+
+b) nextIncomplete's failed tests:
+
+   @Test void partiton4_test(){
+        WorkSchedule ws = new WorkSchedule(50);
+        ws.setRequiredNumber(4, 0, 49);
+        ws.addWorkingPeriod("theo", 0, 49);
+        assertEquals(0, ws.nextIncomplete(0));
+   }
+
+   @Test void partiton5_test(){
+           WorkSchedule ws = new WorkSchedule(50);
+           ws.setRequiredNumber(5, 0, 49);
+           ws.addWorkingPeriod("theo", 0, 10);
+           assertEquals(10, ws.nextIncomplete(0));
+   }

@@ -1,0 +1,14 @@
+Test suites:
+
+Basic tests:
+1 2 3 4
+3 4 3 20
+1 2 3 5
+
+Corner cases:
+1 1 1 1  --Same day
+1 1 12 31 --Covers whole year
+12 31 1 1 --Start date after end date
+12 23 11 24
+1 31 2 1 --One day difference, but the month is different
+

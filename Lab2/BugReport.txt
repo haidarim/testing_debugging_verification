@@ -1,0 +1,39 @@
+3.1
+    Test case 1:
+    1 1 12 31
+    Expected: 364
+    Actual: 336
+
+    Test case 2:
+    11 22 1 1
+    Expected: 40
+    Actual: -359
+
+    Test case 3:
+    1 1 2 1
+    Expected: 31
+    Actual: 0
+
+3.2
+    Local variables:
+    someMonth
+    someDay
+    laterMonth
+    laterDat
+    someDayInYear
+    laterDayInYear
+    aMonth
+    daysBetween
+
+3.3
+    The name of the helper method is "daysInMonth".
+    It is used called at line 35 and then in a loop in the
+    main method on line 39, based on the numbers of months
+    between the start and the end date. The location of the
+    method in the original source-fileis on line no. 13.
+
+3.4 - BugReport
+    line 13        - The whole daysInMonth method is wrong. No 28 days for februari. Wrong for certain months.
+    line 35 and 39 - Both for-loops call daysInMonth starting from 0. There is no month 0 in this case. Should start from 1 or
+                     the months should be numbered 0...11 in the helper function months.
+    line X         - Missing function for determining if some date is after or before the later date.
